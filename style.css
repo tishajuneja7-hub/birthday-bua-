@@ -1,0 +1,576 @@
+/* =====================================================================
+   BUA'S BIRTHDAY — STYLESHEET
+   ---------------------------------------------------------------------
+   Design tokens live at the top in :root — change colors/fonts here.
+   ===================================================================== */
+
+:root {
+  /* -- palette: red-velvet wine + warm cream paper + soft gold -- */
+  --cream:        #FBF3EC;
+  --cream-soft:   #FFFDF9;
+  --paper:        #F3E4D6;
+  --wine:         #7A2E3B;
+  --wine-deep:    #5C2130;
+  --rose:         #C97B84;
+  --gold:         #C9A15A;
+  --ink:          #3A2226;
+  --ink-soft:     rgba(58, 34, 38, 0.7);
+
+  --font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --font-body:    'Work Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-hand:    'Caveat', cursive;
+
+  --radius: 18px;
+  --shadow-soft: 0 12px 30px rgba(92, 33, 48, 0.18);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+  background: var(--cream);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background:
+    radial-gradient(circle at 15% 10%, rgba(201,161,90,0.14), transparent 45%),
+    radial-gradient(circle at 85% 90%, rgba(122,46,59,0.10), transparent 50%),
+    var(--cream);
+}
+
+h1, h2 { margin: 0; font-family: var(--font-display); color: var(--wine-deep); }
+p { margin: 0; }
+
+button { font-family: var(--font-body); }
+
+/* =====================================================================
+   SCENE FRAMEWORK — only one .scene visible (full-viewport) at a time
+   ===================================================================== */
+
+#app {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 20px;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.97);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  overflow-y: auto;
+}
+
+.scene.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1);
+  position: relative;
+}
+
+.scene-inner {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scene-inner.center { align-items: center; text-align: center; }
+.hidden { display: none !important; }
+
+/* =====================================================================
+   TYPOGRAPHY HELPERS
+   ===================================================================== */
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: 13px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--rose);
+  font-weight: 600;
+}
+.eyebrow.center { text-align: center; }
+
+.display-line {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(28px, 8vw, 42px);
+  line-height: 1.2;
+  color: var(--wine-deep);
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(24px, 7vw, 32px);
+  letter-spacing: 0.03em;
+  color: var(--wine-deep);
+}
+.section-title.center { text-align: center; }
+
+.reveal-title { margin-top: 4px; }
+
+.tap-hint {
+  font-size: 14px;
+  color: var(--ink-soft);
+  letter-spacing: 0.02em;
+}
+.tap-hint.center { text-align: center; }
+
+.counter {
+  text-align: center;
+  font-size: 13px;
+  color: var(--rose);
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+/* =====================================================================
+   BUTTONS
+   ===================================================================== */
+
+.btn {
+  border: none;
+  cursor: pointer;
+  border-radius: 999px;
+  padding: 16px 30px;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  min-height: 48px;
+  touch-action: manipulation;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.btn:active { transform: scale(0.96); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--wine), var(--wine-deep));
+  color: var(--cream-soft);
+  box-shadow: var(--shadow-soft);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--wine);
+  border: 1.5px solid var(--rose);
+  padding: 12px 24px;
+}
+
+.next-btn { margin-top: 6px; }
+
+/* =====================================================================
+   MUSIC BUTTON
+   ===================================================================== */
+
+.music-btn {
+  position: fixed;
+  top: max(14px, env(safe-area-inset-top));
+  right: 14px;
+  z-index: 500;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: var(--cream-soft);
+  box-shadow: var(--shadow-soft);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* =====================================================================
+   POLAROID / PHOTO FRAMES
+   ===================================================================== */
+
+.polaroid {
+  background: var(--cream-soft);
+  padding: 10px 10px 26px 10px;
+  border-radius: 6px;
+  box-shadow: var(--shadow-soft);
+  transform: rotate(-2deg);
+}
+
+.big-photo {
+  width: min(78vw, 300px);
+}
+.big-photo img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 3px;
+  display: block;
+}
+
+.final-photo { transform: rotate(1.5deg); }
+
+/* =====================================================================
+   RAPID PHOTO STAGE (archives / childhood / present / revisit)
+   ===================================================================== */
+
+.rapid-stage {
+  position: relative;
+  width: 100%;
+  max-width: 340px;
+  aspect-ratio: 4 / 5;
+  margin: 0 auto;
+  cursor: pointer;
+}
+
+.rapid-stage .stage-photo {
+  position: absolute;
+  inset: 0;
+  background: var(--cream-soft);
+  padding: 10px 10px 30px 10px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+  opacity: 0;
+  transform: scale(0.9) rotate(0deg);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  pointer-events: none;
+}
+
+.rapid-stage .stage-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 3px;
+  display: block;
+}
+
+.rapid-stage .stage-photo.is-active {
+  opacity: 1;
+  transform: scale(1) rotate(var(--tilt, -1.5deg));
+  pointer-events: auto;
+  z-index: 5;
+}
+
+.stage-number {
+  position: absolute;
+  bottom: 6px;
+  right: 12px;
+  font-family: var(--font-hand);
+  font-size: 20px;
+  color: var(--rose);
+}
+
+/* =====================================================================
+   COLLAGE GRID (childhood memory recap)
+   ===================================================================== */
+
+.collage-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  max-width: 340px;
+  margin: 0 auto;
+}
+.collage-grid img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+}
+
+/* =====================================================================
+   GROUP CAPTION CARD
+   ===================================================================== */
+
+.group-caption {
+  background: var(--cream-soft);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  box-shadow: var(--shadow-soft);
+  max-width: 420px;
+  margin: 4px auto 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.group-caption p {
+  font-family: var(--font-hand);
+  font-size: 22px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+/* =====================================================================
+   THEN -> NOW
+   ===================================================================== */
+
+.then-now-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.tn-photo {
+  width: 130px;
+  height: 130px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--shadow-soft);
+}
+.tn-photo img { width: 100%; height: 100%; object-fit: cover; }
+.tn-arrow { font-size: 24px; color: var(--rose); }
+
+.tn-line {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 20px;
+  color: var(--wine-deep);
+  opacity: 0;
+  transform: translateY(6px);
+  animation: tnFade 0.6s ease forwards;
+}
+#tnLine1 { animation-delay: 0.1s; }
+#tnLine2 { animation-delay: 0.6s; }
+#tnLine3 { animation-delay: 1.1s; }
+
+@keyframes tnFade {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* =====================================================================
+   ENVELOPE + LETTER
+   ===================================================================== */
+
+.envelope {
+  position: relative;
+  width: 240px;
+  height: 160px;
+  margin: 10px auto;
+  cursor: pointer;
+}
+
+.envelope-back {
+  position: absolute;
+  inset: 0;
+  background: var(--wine);
+  border-radius: 8px;
+  box-shadow: var(--shadow-soft);
+}
+
+.envelope-letter-peek {
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: -18px;
+  height: 90px;
+  background: var(--cream-soft);
+  border-radius: 4px;
+  transform: translateY(0);
+  transition: transform 0.6s ease;
+  z-index: 1;
+}
+
+.envelope-flap {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--wine-deep);
+  clip-path: polygon(0 0, 50% 55%, 100% 0);
+  transform-origin: top center;
+  transition: transform 0.6s ease;
+  border-radius: 8px 8px 0 0;
+}
+
+.envelope.open .envelope-flap {
+  transform: rotateX(180deg);
+}
+.envelope.open .envelope-letter-peek {
+  transform: translateY(-40px);
+}
+
+.letter-paper {
+  background: var(--cream-soft);
+  background-image: repeating-linear-gradient(var(--cream-soft) 0px, var(--cream-soft) 34px, rgba(122,46,59,0.06) 35px);
+  border-radius: 6px;
+  box-shadow: var(--shadow-soft);
+  padding: 26px 22px;
+  max-height: 60vh;
+  overflow-y: auto;
+  transform: rotate(-0.5deg);
+}
+
+.letter-heading {
+  font-family: var(--font-hand);
+  font-size: 26px;
+  color: var(--wine);
+  margin-bottom: 10px;
+}
+
+.letter-body {
+  font-family: var(--font-hand);
+  font-size: 21px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.letter-intro-text { max-width: 380px; }
+
+.final-message {
+  max-width: 380px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* =====================================================================
+   CAKE SCENE
+   ===================================================================== */
+
+.cake-wrap {
+  width: min(80vw, 300px);
+  margin: 4px auto;
+}
+.cake-svg { width: 100%; height: auto; display: block; }
+
+.flame {
+  transform-origin: center bottom;
+  animation: flicker 1.1s ease-in-out infinite alternate;
+}
+@keyframes flicker {
+  from { transform: scaleY(1) translateY(0); opacity: 1; }
+  to   { transform: scaleY(1.12) translateY(-1px); opacity: 0.85; }
+}
+
+.candle-group.blown .flame {
+  animation: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.knife {
+  transform-origin: 150px 20px;
+  transition: transform 0.9s cubic-bezier(.4,0,.2,1);
+}
+.knife.cut {
+  transform: translateY(70px) rotate(4deg);
+}
+
+/* =====================================================================
+   GIFT BOX
+   ===================================================================== */
+
+.gift-box {
+  position: relative;
+  width: 180px;
+  height: 160px;
+  margin: 10px auto;
+  cursor: pointer;
+}
+.gift-base {
+  position: absolute;
+  bottom: 0;
+  left: 0; right: 0;
+  height: 100px;
+  background: var(--wine);
+  border-radius: 6px;
+  box-shadow: var(--shadow-soft);
+}
+.gift-lid {
+  position: absolute;
+  top: 30px;
+  left: -6px; right: -6px;
+  height: 34px;
+  background: var(--wine-deep);
+  border-radius: 6px;
+  transition: transform 0.6s ease, opacity 0.6s ease;
+  transform-origin: left center;
+}
+.gift-ribbon-v {
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 16px;
+  margin-left: -8px;
+  background: var(--gold);
+}
+.gift-ribbon-h {
+  position: absolute;
+  top: 30px;
+  left: 0; right: 0;
+  height: 16px;
+  background: var(--gold);
+}
+
+.gift-box.open .gift-lid {
+  transform: translateY(-90px) rotate(-25deg);
+  opacity: 0;
+}
+
+/* =====================================================================
+   FLOATING FX LAYER — confetti / hearts / sparkles / balloons
+   ===================================================================== */
+
+.fx-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 300;
+}
+
+.fx-item {
+  position: absolute;
+  top: -40px;
+  will-change: transform, opacity;
+  animation-name: fxFall;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fxFall {
+  0%   { transform: translateY(0) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+}
+
+.fx-balloon {
+  position: absolute;
+  bottom: -60px;
+  animation-name: fxRise;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+@keyframes fxRise {
+  0%   { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(-115vh); opacity: 0; }
+}
+
+/* =====================================================================
+   RESPONSIVE ADJUSTMENTS
+   ===================================================================== */
+
+@media (max-width: 360px) {
+  .display-line { font-size: 26px; }
+  .rapid-stage { max-width: 280px; }
+}
+
+@media (min-width: 700px) {
+  .scene-inner { max-width: 560px; }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001s !important; transition-duration: 0.2s !important; }
+}
