@@ -109,10 +109,8 @@ function celebrate() {
   hearts();
   setTimeout(balloons, 200);
 }
-
 /* =====================================================================
-   MUSIC — song1 (birthday) plays first, fades into song2 (letter-song)
-   A missing/blocked audio file must never break the site.
+   MUSIC — song1 plays first, then song2 starts when the envelope opens
    ===================================================================== */
 
 const song1 = document.getElementById('song1');
@@ -120,42 +118,127 @@ const song2 = document.getElementById('song2');
 const musicBtn = document.getElementById('musicToggle');
 
 let musicMuted = false;
+
+/* Initial audio settings */
 song1.volume = 1;
-song2.volume = 0;
+song2.volume = 1;
+song1.muted = false;
+song2.muted = false;
 
-// Silently ignore audio errors (e.g. mp3 not uploaded yet) so nothing crashes.
-[song1, song2].forEach(a => a.addEventListener('error', () => {}));
+/* Show useful errors instead of silently hiding them */
+song1.addEventListener('error', () => {
+  console.error("ERROR: birthday.mp3 could not be loaded.", song1.error);
+});
 
-function safePlay(audioEl) {
-  const p = audioEl.play();
-  if (p && p.catch) p.catch(() => {});
-}
+song2.addEventListener('error', () => {
+  console.error("ERROR: letter-song.mp3 could not be loaded.", song2.error);
+});
 
+/* Start first song */
 function startSong1() {
-  safePlay(song1);
+  song1.volume = 1;
+  song1.muted = musicMuted;
+
+  const playPromise = song1.play();
+
+  if (playPromise !== undefined) {
+    playPromise
+      .then(() => {
+        console.log("SUCCESS: birthday.mp3 is playing.");
+      })
+      .catch(error => {
+        console.error("ERROR: birthday.mp3 could not play:", error);
+      });
+  }
 }
 
-function crossfadeToSong2() {
-  safePlay(song2);
-  const steps = 20;
-  const stepTime = 60; // ms -> ~1.2s fade
-  let i = 0;
-  const timer = setInterval(() => {
-    i++;
-    song1.volume = Math.max(0, 1 - i / steps);
-    song2.volume = Math.min(1, i / steps);
-    if (i >= steps) {
-      clearInterval(timer);
-      song1.pause();
+/* Start second song when envelope is opened */
+async function crossfadeToSong2() {
+
+  console.log("Envelope opened. Starting second song...");
+  console.log("Second song source:", song2.currentSrc || song2.src);
+  console.log("Second song readyState:", song2.readyState);
+
+  /* Make sure second song is audible */
+  song2.volume = 1;
+  song2.muted = musicMuted;
+
+  /* Make sure the browser loads the file */
+  song2.load();
+
+  try {
+
+    /* Wait until the browser has enough audio data */
+    if (song2.readyState < 2) {
+      await new Promise((resolve, reject) => {
+
+        const onReady = () => {
+          cleanup();
+          resolve();
+        };
+
+        const onError = () => {
+          cleanup();
+          reject(new Error("letter-song.mp3 could not be loaded."));
+        };
+
+        const cleanup = () => {
+          song2.removeEventListener('canplay', onReady);
+          song2.removeEventListener('error', onError);
+        };
+
+        song2.addEventListener('canplay', onReady, { once: true });
+        song2.addEventListener('error', onError, { once: true });
+      });
     }
-  }, stepTime);
+
+    /* START THE SECOND SONG */
+    await song2.play();
+
+    console.log("SUCCESS: letter-song.mp3 is now playing.");
+
+    /* Fade out the first song */
+    const steps = 20;
+    const stepTime = 60;
+    let i = 0;
+
+    const timer = setInterval(() => {
+
+      i++;
+
+      song1.volume = Math.max(0, 1 - i / steps);
+
+      if (i >= steps) {
+        clearInterval(timer);
+
+        song1.pause();
+        song1.currentTime = 0;
+        song1.volume = 1;
+
+        console.log("First song stopped. Second song is playing.");
+      }
+
+    }, stepTime);
+
+  } catch (error) {
+
+    console.error("SECOND SONG FAILED TO PLAY:", error);
+
+    /* Keep the first song playing if second song fails */
+    song1.volume = 1;
+  }
 }
 
+/* Music mute/unmute button */
 musicBtn.addEventListener('click', () => {
+
   musicMuted = !musicMuted;
+
   song1.muted = musicMuted;
   song2.muted = musicMuted;
+
   musicBtn.textContent = musicMuted ? '🔇' : '🔈';
+
 });
 
 /* =====================================================================
