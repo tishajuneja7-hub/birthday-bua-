@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Happy Birthday, Bua 💗</title>
+
+<!-- Fonts: Fraunces for display headings, Work Sans for body, Caveat for handwritten touches -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,500&family=Work+Sans:wght@400;500;600&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     MUSIC CONTROL — small fixed button, works across every scene
+     ============================================================ -->
+<button id="musicToggle" class="music-btn" aria-label="Toggle music" type="button">🔈</button>
+
+<!-- ============================================================
+     BACKGROUND AUDIO
+     Put your two mp3 files inside /assets using these exact names:
+       assets/birthday.mp3     -> plays from Scene 1 through Scene 6
+       assets/letter-song.mp3  -> fades in for Scene 7 onward
+     If a file is missing, the site keeps working normally.
+     ============================================================ -->
+<audio id="song1" src="assets/birthday.mp3" preload="auto" loop></audio>
+<audio id="song2" src="assets/letter-song.mp3" preload="auto" loop></audio>
+
+<!-- Floating decorative layer (hearts / sparkles / confetti get injected here by JS) -->
+<div id="fxLayer" class="fx-layer" aria-hidden="true"></div>
+
+<main id="app">
+
+  <!-- ============================================================
+       SCENE 1 — OPENING / SECRET SURPRISE
+       ============================================================ -->
+  <section class="scene active" data-scene="opening">
+    <div class="scene-inner center">
+      <p class="eyebrow">a little something for you</p>
+      <h1 class="display-line">Bua&hellip; I made<br>something for you.</h1>
+      <button class="btn btn-primary" id="openBtn" type="button">OPEN YOUR SURPRISE ♡</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 2 — HAPPY BIRTHDAY REVEAL
+       ============================================================ -->
+  <section class="scene" data-scene="reveal">
+    <div class="scene-inner center">
+      <div class="polaroid big-photo">
+        <img src="assets/bua-main.jpg" alt="Bua" />
+      </div>
+      <h1 class="display-line reveal-title">HAPPY BIRTHDAY,<br>BUA!</h1>
+      <button class="btn btn-ghost next-btn" type="button">tap to continue ✦</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 3 — THE BUA ARCHIVES (6 old photos, rapid, one caption)
+       ============================================================ -->
+  <section class="scene" data-scene="archives">
+    <div class="scene-inner">
+      <p class="eyebrow center">exhibit no. 01</p>
+      <h2 class="section-title center">THE BUA ARCHIVES</h2>
+      <div class="rapid-stage" id="archivesStage"></div>
+      <p class="tap-hint center" id="archivesHint">tap the photo ✦</p>
+      <div class="group-caption hidden" id="archivesCaption">
+        <p>sorry for this, par this reminds me javan bua jiske piche bdia ladke pagal hua karte the 😂</p>
+        <button class="btn btn-primary next-btn" type="button">continue</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 4 — CHILDHOOD MEMORIES (4 photos, rapid, then collage)
+       ============================================================ -->
+  <section class="scene" data-scene="childhood">
+    <div class="scene-inner">
+      <p class="eyebrow center">exhibit no. 02</p>
+      <h2 class="section-title center">CHILDHOOD MEMORIES</h2>
+      <div class="rapid-stage" id="childhoodStage"></div>
+      <p class="tap-hint center" id="childhoodHint">tap the photo ✦</p>
+      <div class="collage-grid hidden" id="childhoodCollage"></div>
+      <div class="group-caption hidden" id="childhoodCaption">
+        <p>You cared for me since childhood 🥺🥺 nehlaya, sulaya khilaya sb apne tha 😭😭❤️❤️</p>
+        <button class="btn btn-primary next-btn" type="button">continue</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 5 — THEN → NOW
+       ============================================================ -->
+  <section class="scene" data-scene="thennow">
+    <div class="scene-inner center">
+      <div class="then-now-frame">
+        <div class="tn-photo tn-old"><img src="assets/childhood-01.jpg" alt="Then" /></div>
+        <div class="tn-arrow">→</div>
+        <div class="tn-photo tn-new"><img src="assets/present-01.jpg" alt="Now" /></div>
+      </div>
+      <p class="tn-line" id="tnLine1">We grew up.</p>
+      <p class="tn-line" id="tnLine2">A lot changed.</p>
+      <p class="tn-line" id="tnLine3">But our bond remained.</p>
+      <button class="btn btn-ghost next-btn" type="button">tap to continue ✦</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 6 — PRESENT-DAY MEMORIES (17 photos, tap-through)
+       ============================================================ -->
+  <section class="scene" data-scene="present">
+    <div class="scene-inner">
+      <p class="eyebrow center">exhibit no. 03</p>
+      <h2 class="section-title center">PRESENT DAY</h2>
+      <div class="rapid-stage" id="presentStage"></div>
+      <p class="tap-hint center" id="presentHint">tap the photo ✦</p>
+      <p class="counter" id="presentCounter"></p>
+      <div class="group-caption hidden" id="presentCaption">
+        <p>After all this hum kitne bhi bade ho, I will make sure our bond remains the same, chahe jitna bhi chachu or bua dur krlein par I will never stop loving you 🥺🧿💗<br>Happpy birthday once again❤️❤️</p>
+        <button class="btn btn-primary next-btn" type="button">continue</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 7 — PERSONAL BIRTHDAY LETTER
+       (intro -> envelope -> letter, handled as internal steps)
+       ============================================================ -->
+  <section class="scene" data-scene="letter">
+    <div class="scene-inner center" id="letterIntroStep">
+      <p class="display-line letter-intro-text">I have a little<br>something for you&hellip;</p>
+      <button class="btn btn-ghost next-btn" type="button">tap to continue ✦</button>
+    </div>
+
+    <div class="scene-inner center hidden" id="letterEnvelopeStep">
+      <div class="envelope" id="envelope">
+        <div class="envelope-back"></div>
+        <div class="envelope-flap"></div>
+        <div class="envelope-letter-peek"></div>
+      </div>
+      <p class="tap-hint center">tap the envelope ✦</p>
+    </div>
+
+    <div class="scene-inner hidden" id="letterPaperStep">
+      <div class="letter-paper">
+        <p class="letter-heading">for my birthday girl 💋</p>
+        <p class="letter-body">Hello my favourite Bua!!!<br>
+Website ki thodi bohot knowledge hone k baad, i made this for you💗<br><br>
+Kahin kuch galat dikh gya to maaf krdenaa<br>
+First of all, happy birthday to you<br>
+You&rsquo;re the bestest person I have ever met in my life<br>
+Joki mujhe kisi v cheez ki kami mehsoos ni hone deta<br>
+You still stood by my side jb sarre mere against the pintu chachu, mamta bhua, dadi in sbke against jake mera stand lete ho🥺<br>
+I wanted to make your day special for you, par ap yahan nhi the so i made this cute gesture, i hope you liked it ❤️<br>
+Happy birthday to my other mom and dad ❤️ Iloveeyouusomuch❤️</p>
+      </div>
+      <button class="btn btn-primary next-btn" type="button">continue</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 8 — INTERACTIVE RED VELVET CAKE
+       ============================================================ -->
+  <section class="scene" data-scene="cake">
+    <div class="scene-inner center">
+      <p class="display-line" id="cakeWishText">Make a wish, Bua ✨</p>
+      <div class="cake-wrap" id="cakeWrap">
+        <svg id="cakeSvg" viewBox="0 0 300 260" class="cake-svg" aria-hidden="true">
+          <!-- plate -->
+          <ellipse cx="150" cy="235" rx="110" ry="14" fill="var(--gold)" opacity="0.35"/>
+          <!-- bottom tier -->
+          <rect x="55" y="150" width="190" height="70" rx="10" fill="var(--wine-deep)"/>
+          <rect x="55" y="150" width="190" height="14" rx="7" fill="var(--cream-soft)"/>
+          <!-- top tier -->
+          <rect x="90" y="95" width="120" height="60" rx="10" fill="var(--wine)"/>
+          <rect x="90" y="95" width="120" height="12" rx="6" fill="var(--cream-soft)"/>
+          <!-- drips -->
+          <circle cx="105" cy="107" r="6" fill="var(--cream-soft)"/>
+          <circle cx="150" cy="109" r="7" fill="var(--cream-soft)"/>
+          <circle cx="195" cy="107" r="6" fill="var(--cream-soft)"/>
+          <!-- candles -->
+          <g class="candle-group">
+            <rect x="115" y="70" width="6" height="26" fill="var(--gold)"/>
+            <rect x="147" y="65" width="6" height="31" fill="var(--gold)"/>
+            <rect x="179" y="70" width="6" height="26" fill="var(--gold)"/>
+            <ellipse class="flame" cx="118" cy="65" rx="5" ry="8" fill="#FFC26B"/>
+            <ellipse class="flame" cx="150" cy="60" rx="5" ry="8" fill="#FFC26B"/>
+            <ellipse class="flame" cx="182" cy="65" rx="5" ry="8" fill="#FFC26B"/>
+          </g>
+        </svg>
+      </div>
+      <button class="btn btn-primary" id="blowBtn" type="button">BLOW THE CANDLES</button>
+      <h2 class="display-line hidden" id="cakeMessage">HAPPY BIRTHDAY, BUA! ♡</h2>
+      <button class="btn btn-ghost next-btn hidden" id="cakeNext" type="button">tap to continue ✦</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 9 — MEMORY REVISIT (rapid mixed montage)
+       ============================================================ -->
+  <section class="scene" data-scene="revisit">
+    <div class="scene-inner">
+      <h2 class="section-title center">OUR WHOLE STORY</h2>
+      <div class="rapid-stage" id="revisitStage"></div>
+      <p class="tap-hint center" id="revisitHint">tap the photo ✦</p>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 10 — CAKE CUTTING
+       ============================================================ -->
+  <section class="scene" data-scene="cutting">
+    <div class="scene-inner center">
+      <p class="display-line">One more slice of<br>the celebration&hellip;</p>
+      <div class="cake-wrap" id="cuttingCakeWrap">
+        <svg id="cuttingCakeSvg" viewBox="0 0 300 260" class="cake-svg" aria-hidden="true">
+          <ellipse cx="150" cy="235" rx="110" ry="14" fill="var(--gold)" opacity="0.35"/>
+          <rect x="55" y="150" width="190" height="70" rx="10" fill="var(--wine-deep)"/>
+          <rect x="55" y="150" width="190" height="14" rx="7" fill="var(--cream-soft)"/>
+          <rect x="90" y="95" width="120" height="60" rx="10" fill="var(--wine)"/>
+          <rect x="90" y="95" width="120" height="12" rx="6" fill="var(--cream-soft)"/>
+          <line id="cutLine" x1="150" y1="90" x2="150" y2="225" stroke="var(--cream-soft)" stroke-width="3" stroke-dasharray="6 6" opacity="0.7"/>
+          <!-- knife -->
+          <g id="knife" class="knife">
+            <rect x="146" y="20" width="8" height="55" rx="3" fill="#EDEDED"/>
+            <rect x="141" y="70" width="18" height="16" rx="4" fill="var(--wine-deep)"/>
+          </g>
+        </svg>
+      </div>
+      <button class="btn btn-primary" id="cutBtn" type="button">CUT THE CAKE</button>
+      <button class="btn btn-ghost next-btn hidden" id="cuttingNext" type="button">tap to continue ✦</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 11 — GIFT BOX
+       ============================================================ -->
+  <section class="scene" data-scene="giftbox">
+    <div class="scene-inner center">
+      <p class="display-line">One last little<br>surprise&hellip;</p>
+      <div class="gift-box" id="giftBox">
+        <div class="gift-lid"></div>
+        <div class="gift-base"></div>
+        <div class="gift-ribbon-v"></div>
+        <div class="gift-ribbon-h"></div>
+      </div>
+      <p class="tap-hint center" id="giftHint">tap the box ✦</p>
+      <button class="btn btn-ghost next-btn hidden" id="giftNext" type="button">tap to continue ✦</button>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SCENE 12 — FINAL SCREEN
+       ============================================================ -->
+  <section class="scene" data-scene="final">
+    <div class="scene-inner center">
+      <div class="polaroid big-photo final-photo">
+        <img src="assets/final-photo.jpg" alt="Me and Bua" />
+      </div>
+      <p class="letter-body final-message">So this was all bua ❤️❤️ zyada bada nhi bna payi ismein bhi bhout time lga 😭😭<br>
+Happy birthday to you once again❤️❤️<br>
+radhi rani bless you ❤️ I hope you grow and Mein bhi apko Kuch banke vo sb de payu jo kisi ne socha bhi nhi hoga 🥰</p>
+    </div>
+  </section>
+
+</main>
+
+<script src="script.js"></script>
+</body>
+</html>
